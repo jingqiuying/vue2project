@@ -4,7 +4,11 @@
             <el-button @click="handleMenu" icon="el-icon-menu" size="mini"></el-button>
             
             <!-- 面包屑 -->
-            <span class="text">首页</span>
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item v-for="i in tags" :key="i.path" :to="{path:i.path}">
+                    {{i.label}}
+                </el-breadcrumb-item>
+            </el-breadcrumb>
         
         </div>
           <div class="r-content">
@@ -25,13 +29,17 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
     name:'CommonHeader',
     methods:{
         handleMenu(){
             this.$store.commit('collapseMenu')
         }
-    }
+    },
+    computed:{
+        ...mapState({tags:state => state.tab.tabsList})
+    },
 }
 </script>
 
@@ -43,11 +51,31 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .text {
+    .l-content{
+        display: flex;
+        align-items: center;
+        /deep/.el-breadcrumb__item{
+            .el-breadcrumb__inner{
+                font-weight: normal;
+                &.is-link{
+                    color: #666;
+                }
+            }
+            &:last-child{//伪类
+                .el-breadcrumb__inner{
+                    color: #fff;
+                }
+            }
+
+
+        }
+        .text {
         color: #fff;
         font-size: 14px;
         margin-left: 10px;
     }
+    }
+    
     .r-content {
         .user {
             width: 40px;

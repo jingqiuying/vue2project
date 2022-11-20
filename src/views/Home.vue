@@ -32,11 +32,17 @@
           </el-card>
         </div>
         <el-card style="height: 280px;">
-
+          <!-- 折线图 -->
+          <div ref="echarts1" style="height: 280px"></div>
         </el-card>
         <div class="graph">
-          <el-card style="height: 260px;"></el-card>
-          <el-card style="height: 260px;"></el-card>
+          <div></div>
+          <el-card id="echarts2" style="height: 260px;">
+            <div ref="echarts2" style="height: 260px;"></div>
+          </el-card>
+          <el-card style="height: 260px;">
+            <div ref="echarts3" style="height: 240px;"></div>
+          </el-card>
         </div>
       </el-col>
     </el-row>
@@ -45,8 +51,9 @@
 
 <script>
 import {getData} from '../api'
+import * as echarts from 'echarts'
 export default {
-  name:'Home',
+  name: 'Home',
   data() {
     return {
       tableData: [],
@@ -56,24 +63,138 @@ export default {
         mouthBuy: '上月购买',
         totalBuy: '总共购买',
       },
-      countData:[
-        {name:'今日支付订单',value:1234,icon:'success',color:'#2ec7c9'},
-        {name:'今日收藏订单',value:210,icon:'star-on',color:'#ffb980'},
-        {name:'今日未支付订单',value:1234,icon:'s-goods',color:'#5ab1ef'},
-        {name:'本月支付订单',value:1234,icon:'success',color:'#2ec7c9'},
-        {name:'本月收藏订单',value:210,icon:'star-on',color:'#ffb980'},
-        {name:'本月未支付订单',value:1234,icon:'s-goods',color:'#5ab1ef'},
-      
+      countData: [
+        { name: '今日支付订单', value: 1234, icon: 'success', color: '#2ec7c9' },
+        { name: '今日收藏订单', value: 210, icon: 'star-on', color: '#ffb980' },
+        { name: '今日未支付订单', value: 1234, icon: 's-goods', color: '#5ab1ef' },
+        { name: '本月支付订单', value: 1234, icon: 'success', color: '#2ec7c9' },
+        { name: '本月收藏订单', value: 210, icon: 'star-on', color: '#ffb980' },
+        { name: '本月未支付订单', value: 1234, icon: 's-goods', color: '#5ab1ef' },
+
       ]
     }
   },
-  mounted(){
-    getData().then(({data}) =>{
-      const {tableData} = data.data
+
+  mounted() {
+    getData().then(({ data }) => {
+      const { tableData } = data.data
       this.tableData = tableData
+
+      //处理xAxis
+      const { orderData, userData,videoData } = data.data
+      const keys = Object.keys(orderData.data[0])
+      const xAxis = orderData.date
+
+      // 基于准备好的dom，初始化echarts实例
+      const echarts1 = echarts.init(this.$refs.echarts1)
+
+      // 指定图表的配置项和数据
+      var echars1Option = {}
+      echars1Option.legend = {
+        data: keys
+      }
+      //处理数据
+      echars1Option.xAxis = {
+        data: xAxis
+      }
+      echars1Option.yAxis = {}
+      echars1Option.series = []
+      keys.forEach(key => {
+        echars1Option.series.push({
+          name: key,
+          data: orderData.data.map(item => item[key]),
+          type: 'line'
+        })
+      })
+
+      // 使用刚指定的配置项和数据显示图表。
+      echarts1.setOption(echars1Option);
+      
+      //柱状图
+      var echarts2 = echarts.init(this.$refs.echarts2)
+      // var echarts2 = echarts.init(document.getElementById('echarts2'));
+      const echars2Option = {
+        legend: {
+          //图例文字颜色
+          textStyle: { color: "#333" }
+        },
+        grid: { left: "20%" },
+        //提示框
+        
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: {
+          type: 'category',//类目轴
+          data: userData.map(item => item.date),
+          axisLine: {
+            lineStyle: { color: "#17b3a3", },
+          },
+          axisLabel: { interval: 0, color: "#333" }
+        },
+        yAxis: [
+          {
+            type: 'value',
+            axisLine: { lineStyle: { color: '#17b3a3' } }
+          }
+        ],
+        color: ["#2ec7c9", "#b7a2be"],
+        series: [
+          {
+            name: '新增用户',
+            data: userData.map(i => i.new),
+            type: 'bar'
+          },
+          {
+            name: '活跃用户',
+            data: userData.map(i => i.active),
+            type: 'bar'
+          }
+        ]
+      }
+      // 使用刚指定的配置项和数据显示图表。
+      echarts2.setOption(echars2Option);
+
+      //饼状图
+      var echarts3 = echarts.init(this.$refs.echarts3)
+      const echars3ption = {
+        tooltip:{
+          trigger:'item',
+        },
+        legend : {
+          orient: "vertical",
+          left: "left",
+          // data: ["Apple", "Grapes", "Pineapples", "Oranges", "Bananas"]
+          data: videoData.map(i => i.name)
+        },
+        color:[
+          "#0f78f4",
+          "#dd536b",
+          "#9462e5",
+          "#a6a6a6",
+          "#e1bb22",
+          "#39c362",
+          "#3ed1cf",
+        ],
+
+        series : [
+          {
+            data:videoData,
+            type:'pie'
+          }
+        ],
+
+
+      }
+      
+      
+      echarts3.setOption(echars3ption);
+
+      
     })
-  }
-  
+
+  },
+
 }
 </script>
 
