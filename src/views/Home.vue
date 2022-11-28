@@ -6,7 +6,7 @@
           <div class="user">
             <img src="../assets/mouth.png" alt="">
             <div class="userinfo">
-              <p class="name">Admin</p>
+              <p class="name">admin</p>
               <p class="access">超级管理员</p>
             </div>
           </div>
@@ -52,6 +52,7 @@
 <script>
 import {getData} from '../api'
 import * as echarts from 'echarts'
+import { mapState } from 'vuex'
 export default {
   name: 'Home',
   data() {
