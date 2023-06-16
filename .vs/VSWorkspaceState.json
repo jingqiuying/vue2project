@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\api",
+    "\\src\\components",
+    "\\src\\store",
+    "\\src\\utils",
+    "\\src\\views"
+  ],
+  "SelectedNode": "\\src\\store\\tab.js",
+  "PreviewInSolutionExplorer": false
+}

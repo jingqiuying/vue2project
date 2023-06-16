@@ -158,7 +158,7 @@ export default {
         this.tableData = data.list
         console.log(data.count);
         this.total = data.count || 0
-        // console.log(data);
+        console.log(data);
       })
     },
     handleDelete(row) {
@@ -186,7 +186,6 @@ export default {
     handlePage(val){
       console.log(val,'val');
       this.pageData.page = val
-
       this.getList()
     },
     onSubmit(){
